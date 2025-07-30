@@ -133,6 +133,13 @@
       margin-bottom: 1rem;
     }
 
+    .form-row-full {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
     .form-group {
       display: flex;
       flex-direction: column;
@@ -270,6 +277,92 @@
       line-height: 1.4;
     }
 
+    .subtopics {
+      margin-top: 0.75rem;
+      padding-left: 1rem;
+      border-left: 2px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .subtopic-item {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+      color: #c0c0c0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .subtopic-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .subtopic-item.completed {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .subtopic-text {
+      flex: 1;
+    }
+
+    .subtopic-actions {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .btn-mini {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.7rem;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .btn-mini-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-mini-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .add-subtopic {
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .add-subtopic input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #e9e9e7;
+      font-size: 0.85rem;
+    }
+
+    .add-subtopic input::placeholder {
+      color: #6b6b6b;
+      font-size: 0.85rem;
+    }
+
+    .add-subtopic button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
     .study-comments {
       margin-top: 1rem;
       padding-top: 1rem;
@@ -394,6 +487,10 @@
       .form-row {
         grid-template-columns: 1fr;
         gap: 0.75rem;
+      }
+
+      .form-row-full {
+        grid-template-columns: 1fr;
       }
       
       .add-form {
@@ -661,6 +758,12 @@
               <input type="text" id="bio-content" placeholder="Ex: Metabolismo de carboidratos">
             </div>
           </div>
+          <div class="form-row-full">
+            <div class="form-group">
+              <label>Sub-tópicos (opcional - separados por vírgula)</label>
+              <input type="text" id="bio-subtopics" placeholder="Ex: Glicólise, Ciclo de Krebs, Cadeia respiratória">
+            </div>
+          </div>
           <button class="btn btn-primary" onclick="addStudyItem('bioquimica')">
             <i class="fas fa-plus"></i> Adicionar
           </button>
@@ -704,6 +807,12 @@
               <input type="text" id="sm-content" placeholder="Ex: Transtornos de ansiedade">
             </div>
           </div>
+          <div class="form-row-full">
+            <div class="form-group">
+              <label>Sub-tópicos (opcional - separados por vírgula)</label>
+              <input type="text" id="sm-subtopics" placeholder="Ex: TAG, Fobia social, Transtorno do pânico">
+            </div>
+          </div>
           <button class="btn btn-primary" onclick="addStudyItem('saude-mental')">
             <i class="fas fa-plus"></i> Adicionar
           </button>
@@ -745,6 +854,12 @@
             <div class="form-group">
               <label>Conteúdo</label>
               <input type="text" id="fis-content" placeholder="Ex: Sistema cardiovascular">
+            </div>
+          </div>
+          <div class="form-row-full">
+            <div class="form-group">
+              <label>Sub-tópicos (opcional - separados por vírgula)</label>
+              <input type="text" id="fis-subtopics" placeholder="Ex: Anatomia cardíaca, Ciclo cardíaco, Pressão arterial">
             </div>
           </div>
           <button class="btn btn-primary" onclick="addStudyItem('fisiologia')">
@@ -813,6 +928,7 @@
           const data = JSON.parse(saved);
           studyData = data.studyData || studyData;
           nextId = data.nextId || nextId;
+          nextSubtopicId = data.nextSubtopicId || nextSubtopicId;
           console.log('Dados carregados do armazenamento local');
         }
       } catch (error) {
@@ -826,6 +942,7 @@
         const dataToSave = {
           studyData: studyData,
           nextId: nextId,
+          nextSubtopicId: nextSubtopicId,
           lastUpdate: new Date().toISOString()
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
@@ -840,6 +957,7 @@
       const dataToExport = {
         studyData: studyData,
         nextId: nextId,
+        nextSubtopicId: nextSubtopicId,
         exportDate: new Date().toISOString(),
         version: '1.0'
       };
@@ -868,6 +986,7 @@
               if (importedData.studyData && importedData.nextId) {
                 studyData = importedData.studyData;
                 nextId = importedData.nextId;
+                nextSubtopicId = importedData.nextSubtopicId || 1;
                 saveToStorage();
                 
                 // Recarregar interface
@@ -903,25 +1022,26 @@
     // Dados iniciais
     let studyData = {
       'bioquimica': [
-        { date: '2025-07-30', day: 'Quarta-feira', content: 'Introducción al metabolismo', completed: false, comments: '', id: 1 },
-        { date: '2025-07-31', day: 'Quinta-feira', content: 'Metabolismo de glúcidos', completed: false, comments: '', id: 2 },
-        { date: '2025-08-01', day: 'Sexta-feira', content: 'Metabolismo de lípidos', completed: false, comments: '', id: 3 },
-        { date: '2025-08-04', day: 'Segunda-feira', content: 'Metabolismo de aminoácidos y proteínas', completed: false, comments: '', id: 4 },
-        { date: '2025-08-05', day: 'Terça-feira', content: 'Metabolismo de nucleótidos', completed: false, comments: '', id: 5 },
-        { date: '2025-08-06', day: 'Quarta-feira', content: 'Integração metabólica', completed: false, comments: '', id: 6 },
-        { date: '2025-08-19', day: 'Terça-feira', content: 'Revisão geral', completed: false, comments: '', id: 7 }
+        { date: '2025-07-30', day: 'Quarta-feira', content: 'Introducción al metabolismo', subtopics: ['Anabolismo', 'Catabolismo', 'Vias metabólicas'], completed: false, comments: '', id: 1 },
+        { date: '2025-07-31', day: 'Quinta-feira', content: 'Metabolismo de glúcidos', subtopics: ['Glicólise', 'Gliconeogênese', 'Via das pentoses'], completed: false, comments: '', id: 2 },
+        { date: '2025-08-01', day: 'Sexta-feira', content: 'Metabolismo de lípidos', subtopics: ['Beta-oxidação', 'Síntese de ácidos graxos', 'Colesterol'], completed: false, comments: '', id: 3 },
+        { date: '2025-08-04', day: 'Segunda-feira', content: 'Metabolismo de aminoácidos y proteínas', subtopics: ['Transaminação', 'Desaminação', 'Ciclo da ureia'], completed: false, comments: '', id: 4 },
+        { date: '2025-08-05', day: 'Terça-feira', content: 'Metabolismo de nucleótidos', subtopics: ['Síntese de purinas', 'Síntese de pirimidinas', 'Degradação'], completed: false, comments: '', id: 5 },
+        { date: '2025-08-06', day: 'Quarta-feira', content: 'Integração metabólica', subtopics: ['Estado alimentado', 'Estado de jejum', 'Regulação hormonal'], completed: false, comments: '', id: 6 },
+        { date: '2025-08-19', day: 'Terça-feira', content: 'Revisão geral', subtopics: [], completed: false, comments: '', id: 7 }
       ],
       'saude-mental': [
-        { date: '2025-08-01', day: 'Sexta-feira', content: 'Conceitos Básicos', completed: false, comments: '', id: 8 },
-        { date: '2025-08-06', day: 'Quarta-feira', content: 'Transtornos Comuns', completed: false, comments: '', id: 9 }
+        { date: '2025-08-01', day: 'Sexta-feira', content: 'Conceitos Básicos', subtopics: ['Definição de saúde mental', 'Fatores de risco', 'Prevenção'], completed: false, comments: '', id: 8 },
+        { date: '2025-08-06', day: 'Quarta-feira', content: 'Transtornos Comuns', subtopics: ['Depressão', 'Ansiedade', 'Transtorno bipolar'], completed: false, comments: '', id: 9 }
       ],
       'fisiologia': [
-        { date: '2025-08-02', day: 'Sábado', content: 'Fisiologia Celular', completed: false, comments: '', id: 10 },
-        { date: '2025-08-07', day: 'Quinta-feira', content: 'Neurofisiologia', completed: false, comments: '', id: 11 }
+        { date: '2025-08-02', day: 'Sábado', content: 'Fisiologia Celular', subtopics: ['Membrana plasmática', 'Transporte celular', 'Metabolismo celular'], completed: false, comments: '', id: 10 },
+        { date: '2025-08-07', day: 'Quinta-feira', content: 'Neurofisiologia', subtopics: ['Potencial de ação', 'Sinapse', 'Neurotransmissores'], completed: false, comments: '', id: 11 }
       ]
     };
 
     let nextId = 12;
+    let nextSubtopicId = 1;
 
     function showTab(tabName) {
       // Remover active de todas as abas
@@ -945,17 +1065,24 @@
       const date = document.getElementById(`${prefix}-date`).value;
       const day = document.getElementById(`${prefix}-day`).value;
       const content = document.getElementById(`${prefix}-content`).value;
+      const subtopicsInput = document.getElementById(`${prefix}-subtopics`).value;
 
       if (!date || !day || !content) {
-        alert('Por favor, preencha todos os campos!');
+        alert('Por favor, preencha todos os campos obrigatórios!');
         return;
       }
+
+      // Processar sub-tópicos
+      const subtopics = subtopicsInput
+        ? subtopicsInput.split(',').map(s => s.trim()).filter(s => s.length > 0)
+        : [];
 
       const newItem = {
         id: nextId++,
         date: date,
         day: day,
         content: content,
+        subtopics: subtopics.map(text => ({ id: nextSubtopicId++, text: text, completed: false })),
         completed: false,
         comments: ''
       };
@@ -966,6 +1093,7 @@
       document.getElementById(`${prefix}-date`).value = '';
       document.getElementById(`${prefix}-day`).value = '';
       document.getElementById(`${prefix}-content`).value = '';
+      document.getElementById(`${prefix}-subtopics`).value = '';
 
       loadStudyList(subject);
       updateStats();
@@ -996,32 +1124,76 @@
         return;
       }
 
-      container.innerHTML = items.map(item => `
-        <div class="study-item ${item.completed ? 'completed' : 'pending'}">
-          <div class="study-header">
-            <div class="study-date">
-              <i class="fas fa-calendar"></i> ${formatDate(item.date)} - ${item.day}
-            </div>
-            <div class="study-actions">
-              <button class="btn ${item.completed ? 'btn-danger' : 'btn-success'}" 
-                      onclick="toggleComplete('${subject}', ${item.id})">
-                <i class="fas ${item.completed ? 'fa-times' : 'fa-check'}"></i>
-                ${item.completed ? 'Desmarcar' : 'Concluir'}
+      container.innerHTML = items.map(item => {
+        const subtopicsHtml = item.subtopics && item.subtopics.length > 0 ? `
+          <div class="subtopics">
+            ${item.subtopics.map(subtopic => `
+              <div class="subtopic-item ${subtopic.completed ? 'completed' : ''}">
+                <span class="subtopic-text">${subtopic.text}</span>
+                <div class="subtopic-actions">
+                  <button class="btn-mini ${subtopic.completed ? 'btn-mini-danger' : 'btn-mini-success'}" 
+                          onclick="toggleSubtopic('${subject}', ${item.id}, ${subtopic.id})">
+                    <i class="fas ${subtopic.completed ? 'fa-times' : 'fa-check'}"></i>
+                  </button>
+                  <button class="btn-mini btn-mini-danger" 
+                          onclick="removeSubtopic('${subject}', ${item.id}, ${subtopic.id})">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+            <div class="add-subtopic">
+              <input type="text" 
+                     placeholder="Adicionar sub-tópico..." 
+                     id="new-subtopic-${item.id}"
+                     onkeypress="if(event.key==='Enter') addSubtopic('${subject}', ${item.id})">
+              <button class="btn btn-primary" onclick="addSubtopic('${subject}', ${item.id})">
+                <i class="fas fa-plus"></i>
               </button>
-              <button class="btn btn-danger" onclick="removeItem('${subject}', ${item.id})">
-                <i class="fas fa-trash"></i>
+            </div>
+          </div>
+        ` : `
+          <div class="subtopics">
+            <div class="add-subtopic">
+              <input type="text" 
+                     placeholder="Adicionar sub-tópico..." 
+                     id="new-subtopic-${item.id}"
+                     onkeypress="if(event.key==='Enter') addSubtopic('${subject}', ${item.id})">
+              <button class="btn btn-primary" onclick="addSubtopic('${subject}', ${item.id})">
+                <i class="fas fa-plus"></i>
               </button>
             </div>
           </div>
-          <div class="study-content">
-            <h3>${item.content}</h3>
+        `;
+
+        return `
+          <div class="study-item ${item.completed ? 'completed' : 'pending'}">
+            <div class="study-header">
+              <div class="study-date">
+                <i class="fas fa-calendar"></i> ${formatDate(item.date)} - ${item.day}
+              </div>
+              <div class="study-actions">
+                <button class="btn ${item.completed ? 'btn-danger' : 'btn-success'}" 
+                        onclick="toggleComplete('${subject}', ${item.id})">
+                  <i class="fas ${item.completed ? 'fa-times' : 'fa-check'}"></i>
+                  ${item.completed ? 'Desmarcar' : 'Concluir'}
+                </button>
+                <button class="btn btn-danger" onclick="removeItem('${subject}', ${item.id})">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="study-content">
+              <h3>${item.content}</h3>
+              ${subtopicsHtml}
+            </div>
+            <div class="study-comments">
+              <textarea placeholder="Adicione comentários sobre este conteúdo..." 
+                        onchange="updateComments('${subject}', ${item.id}, this.value)">${item.comments}</textarea>
+            </div>
           </div>
-          <div class="study-comments">
-            <textarea placeholder="Adicione comentários sobre este conteúdo..." 
-                      onchange="updateComments('${subject}', ${item.id}, this.value)">${item.comments}</textarea>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       updateStats();
     }
@@ -1048,6 +1220,55 @@
       if (item) {
         item.comments = comments;
         saveToStorage(); // Salvar automaticamente
+      }
+    }
+
+    function addSubtopic(subject, itemId) {
+      const input = document.getElementById(`new-subtopic-${itemId}`);
+      const text = input.value.trim();
+      
+      if (!text) {
+        alert('Por favor, digite o sub-tópico!');
+        return;
+      }
+
+      const item = studyData[subject].find(item => item.id === itemId);
+      if (item) {
+        if (!item.subtopics) {
+          item.subtopics = [];
+        }
+        item.subtopics.push({
+          id: nextSubtopicId++,
+          text: text,
+          completed: false
+        });
+        
+        input.value = '';
+        loadStudyList(subject);
+        saveToStorage();
+      }
+    }
+
+    function toggleSubtopic(subject, itemId, subtopicId) {
+      const item = studyData[subject].find(item => item.id === itemId);
+      if (item && item.subtopics) {
+        const subtopic = item.subtopics.find(st => st.id === subtopicId);
+        if (subtopic) {
+          subtopic.completed = !subtopic.completed;
+          loadStudyList(subject);
+          saveToStorage();
+        }
+      }
+    }
+
+    function removeSubtopic(subject, itemId, subtopicId) {
+      if (confirm('Tem certeza que deseja remover este sub-tópico?')) {
+        const item = studyData[subject].find(item => item.id === itemId);
+        if (item && item.subtopics) {
+          item.subtopics = item.subtopics.filter(st => st.id !== subtopicId);
+          loadStudyList(subject);
+          saveToStorage();
+        }
       }
     }
 
