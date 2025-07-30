@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cronograma de Estudos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #191919;
+      min-height: 100vh;
+      padding: 2rem;
+      color: #e9e9e7;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #2f3437;
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32);
+      overflow: hidden;
+      color: #e9e9e7;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2f3437 0%, #37393c 100%);
+      color: #e9e9e7;
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      background: rgba(13, 3, 88, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .tabs {
+      display: flex;
+      background: #25262b;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      overflow-x: auto;
+    }
+
+    .tab {
+      flex: 1;
+      min-width: 150px;
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #9b9b9b;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e9e9e7;
+    }
+
+    .tab.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+    }
+
+    .tab-content {
+      padding: 2rem;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .add-form {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #e9e9e7;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group textarea {
+      padding: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.05);
+      color: #e9e9e7;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #6b6b6b;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .study-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .study-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.2s ease;
+      color: #e9e9e7;
+    }
+
+    .study-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .study-item.completed {
+      border-left: 3px solid #10b981;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .study-item.pending {
+      border-left: 3px solid #f59e0b;
+      background: rgba(245, 158, 11, 0.05);
+    }
+
+    .study-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .study-date {
+      font-weight: 500;
+      color: #9b9b9b;
+      font-size: 0.85rem;
+    }
+
+    .study-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .study-content h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #e9e9e7;
+      line-height: 1.4;
+    }
+
+    .study-comments {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .study-comments textarea {
+      width: 100%;
+      min-height: 60px;
+      resize: vertical;
+      padding: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      font-family: inherit;
+      background: rgba(255, 255, 255, 0.03);
+      color: #e9e9e7;
+      font-size: 0.9rem;
+    }
+
+    .study-comments textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .study-comments textarea::placeholder {
+      color: #6b6b6b;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6b6b6b;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #4b4b4b;
+    }
+
+    .empty-state h3 {
+      color: #9b9b9b;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #6b6b6b;
+    }
+
+    /* Responsividade para diferentes tamanhos de tela */
+    
+    /* Tablets e telas pequenas */
+    @media (max-width: 1024px) {
+      .container {
+        margin: 0 1rem;
+      }
+      
+      .stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Mobile landscape */
+    @media (max-width: 768px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .container {
+        border-radius: 15px;
+        margin: 0;
+      }
+      
+      .header {
+        padding: 1.5rem 1rem;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .header p {
+        font-size: 1rem;
+      }
+      
+      .header-actions {
+        gap: 0.5rem;
+      }
+      
+      .header-actions .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+      
+      .tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .tab {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        min-width: 110px;
+        white-space: nowrap;
+      }
+      
+      .tab i {
+        display: none;
+      }
+      
+      .tab-content {
+        padding: 1rem;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      
+      .add-form {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .add-form h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .study-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .study-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .study-item {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+      }
+      
+      .study-content h3 {
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .stat-card {
+        padding: 0.75rem;
+      }
+      
+      .stat-number {
+        font-size: 1.5rem;
+      }
+      
+      .stat-label {
+        font-size: 0.8rem;
+      }
+      
+      .empty-state {
+        padding: 2rem 1rem;
+      }
+      
+      .empty-state i {
+        font-size: 2.5rem;
+      }
+      
+      .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        gap: 0.25rem;
+      }
+      
+      .btn i {
+        font-size: 0.8rem;
+      }
+      
+      .study-comments textarea {
+        font-size: 0.9rem;
+        min-height: 50px;
+      }
+    }
+
+    /* Mobile portrait */
+    @media (max-width: 480px) {
+      body {
+        padding: 0.25rem;
+      }
+      
+      .header {
+        padding: 1rem;
+      }
+      
+      .header h1 {
+        font-size: 1.6rem;
+      }
+      
+      .header p {
+        font-size: 0.9rem;
+      }
+      
+      .tab {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.8rem;
+        min-width: 90px;
+      }
+      
+      .tab-content {
+        padding: 0.75rem;
+      }
+      
+      .add-form {
+        padding: 0.75rem;
+      }
+      
+      .study-item {
+        padding: 0.75rem;
+      }
+      
+      .study-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem;
+      }
+      
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      
+      .stat-card {
+        padding: 0.5rem;
+      }
+      
+      .stat-number {
+        font-size: 1.3rem;
+      }
+      
+      .stat-label {
+        font-size: 0.75rem;
+      }
+      
+      .form-group input,
+      .form-group textarea {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+      
+      .study-comments textarea {
+        min-height: 40px;
+        padding: 0.5rem;
+      }
+    }
+
+    /* Telas muito grandes */
+    @media (min-width: 1440px) {
+      .container {
+        max-width: 1400px;
+      }
+      
+      .stats {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr 1fr 3fr;
+      }
+    }
+
+    /* Melhorias para touch devices */
+    @media (hover: none) {
+      .btn:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      
+      .study-item:hover {
+        transform: none;
+      }
+      
+      .tab:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    /* Modo escuro automático - remover pois já temos tema escuro */
+    @media (prefers-color-scheme: dark) {
+      /* Manter o tema atual */
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e9e9e7;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #3b82f6;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #9b9b9b;
+      margin-top: 0.5rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-graduation-cap"></i> Cronograma de Estudos</h1>
+      <p>Organize seus estudos de forma eficiente e acompanhe seu progresso</p>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="exportData()" title="Exportar dados (Ctrl+S)">
+          <i class="fas fa-download"></i> Exportar
+        </button>
+        <button class="btn btn-secondary" onclick="importData()" title="Importar dados (Ctrl+O)">
+          <i class="fas fa-upload"></i> Importar
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('bioquimica')">
+        <i class="fas fa-flask"></i> Bioquímica
+      </button>
+      <button class="tab" onclick="showTab('saude-mental')">
+        <i class="fas fa-brain"></i> Saúde Mental
+      </button>
+      <button class="tab" onclick="showTab('fisiologia')">
+        <i class="fas fa-heartbeat"></i> Fisiologia
+      </button>
+      <button class="tab" onclick="showTab('geral')">
+        <i class="fas fa-chart-bar"></i> Visão Geral
+      </button>
+    </div>
+
+    <div class="tab-content">
+      <!-- Bioquímica -->
+      <div id="bioquimica" class="tab-panel active">
+        <div class="add-form">
+          <h3><i class="fas fa-plus"></i> Adicionar Novo Conteúdo</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="bio-date">
+            </div>
+            <div class="form-group">
+              <label>Dia da Semana</label>
+              <input type="text" id="bio-day" placeholder="Ex: Segunda-feira">
+            </div>
+            <div class="form-group">
+              <label>Conteúdo</label>
+              <input type="text" id="bio-content" placeholder="Ex: Metabolismo de carboidratos">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addStudyItem('bioquimica')">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="bio-total">7</div>
+            <div class="stat-label">Total de Conteúdos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="bio-completed">0</div>
+            <div class="stat-label">Concluídos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="bio-pending">7</div>
+            <div class="stat-label">Pendentes</div>
+          </div>
+        </div>
+
+        <div class="study-list" id="bio-list">
+          <!-- Conteúdos serão carregados aqui -->
+        </div>
+      </div>
+
+      <!-- Saúde Mental -->
+      <div id="saude-mental" class="tab-panel">
+        <div class="add-form">
+          <h3><i class="fas fa-plus"></i> Adicionar Novo Conteúdo</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="sm-date">
+            </div>
+            <div class="form-group">
+              <label>Dia da Semana</label>
+              <input type="text" id="sm-day" placeholder="Ex: Segunda-feira">
+            </div>
+            <div class="form-group">
+              <label>Conteúdo</label>
+              <input type="text" id="sm-content" placeholder="Ex: Transtornos de ansiedade">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addStudyItem('saude-mental')">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="sm-total">2</div>
+            <div class="stat-label">Total de Conteúdos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="sm-completed">0</div>
+            <div class="stat-label">Concluídos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="sm-pending">2</div>
+            <div class="stat-label">Pendentes</div>
+          </div>
+        </div>
+
+        <div class="study-list" id="sm-list">
+          <!-- Conteúdos serão carregados aqui -->
+        </div>
+      </div>
+
+      <!-- Fisiologia -->
+      <div id="fisiologia" class="tab-panel">
+        <div class="add-form">
+          <h3><i class="fas fa-plus"></i> Adicionar Novo Conteúdo</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="fis-date">
+            </div>
+            <div class="form-group">
+              <label>Dia da Semana</label>
+              <input type="text" id="fis-day" placeholder="Ex: Segunda-feira">
+            </div>
+            <div class="form-group">
+              <label>Conteúdo</label>
+              <input type="text" id="fis-content" placeholder="Ex: Sistema cardiovascular">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addStudyItem('fisiologia')">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="fis-total">2</div>
+            <div class="stat-label">Total de Conteúdos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="fis-completed">0</div>
+            <div class="stat-label">Concluídos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="fis-pending">2</div>
+            <div class="stat-label">Pendentes</div>
+          </div>
+        </div>
+
+        <div class="study-list" id="fis-list">
+          <!-- Conteúdos serão carregados aqui -->
+        </div>
+      </div>
+
+      <!-- Visão Geral -->
+      <div id="geral" class="tab-panel">
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number" id="total-all">11</div>
+            <div class="stat-label">Total Geral</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="completed-all">0</div>
+            <div class="stat-label">Concluídos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="pending-all">11</div>
+            <div class="stat-label">Pendentes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="progress-all">0%</div>
+            <div class="stat-label">Progresso</div>
+          </div>
+        </div>
+
+        <h3 style="color: #e9e9e7; font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;">Próximas Atividades</h3>
+        <div class="study-list" id="upcoming-list">
+          <!-- Atividades próximas serão carregadas aqui -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sistema de salvamento local
+    const STORAGE_KEY = 'cronograma_estudos_data';
+    
+    // Carregar dados do localStorage
+    function loadFromStorage() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const data = JSON.parse(saved);
+          studyData = data.studyData || studyData;
+          nextId = data.nextId || nextId;
+          console.log('Dados carregados do armazenamento local');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+    }
+    
+    // Salvar dados no localStorage
+    function saveToStorage() {
+      try {
+        const dataToSave = {
+          studyData: studyData,
+          nextId: nextId,
+          lastUpdate: new Date().toISOString()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+        console.log('Dados salvos no armazenamento local');
+      } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+      }
+    }
+    
+    // Exportar dados como JSON
+    function exportData() {
+      const dataToExport = {
+        studyData: studyData,
+        nextId: nextId,
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      const dataStr = JSON.stringify(dataToExport, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(dataBlob);
+      link.download = `cronograma_estudos_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+    }
+    
+    // Importar dados de arquivo JSON
+    function importData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const importedData = JSON.parse(e.target.result);
+              if (importedData.studyData && importedData.nextId) {
+                studyData = importedData.studyData;
+                nextId = importedData.nextId;
+                saveToStorage();
+                
+                // Recarregar interface
+                const activeTab = document.querySelector('.tab.active').textContent.trim();
+                if (activeTab.includes('Geral')) {
+                  loadOverview();
+                } else {
+                  const tabMap = {
+                    'Bioquímica': 'bioquimica',
+                    'Saúde Mental': 'saude-mental',
+                    'Fisiologia': 'fisiologia'
+                  };
+                  const tabKey = Object.keys(tabMap).find(key => activeTab.includes(key));
+                  if (tabKey) {
+                    loadStudyList(tabMap[tabKey]);
+                  }
+                }
+                updateStats();
+                alert('Dados importados com sucesso!');
+              } else {
+                alert('Arquivo inválido!');
+              }
+            } catch (error) {
+              alert('Erro ao importar arquivo: ' + error.message);
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
+      input.click();
+    }
+
+    // Dados iniciais
+    let studyData = {
+      'bioquimica': [
+        { date: '2025-07-30', day: 'Quarta-feira', content: 'Introducción al metabolismo', completed: false, comments: '', id: 1 },
+        { date: '2025-07-31', day: 'Quinta-feira', content: 'Metabolismo de glúcidos', completed: false, comments: '', id: 2 },
+        { date: '2025-08-01', day: 'Sexta-feira', content: 'Metabolismo de lípidos', completed: false, comments: '', id: 3 },
+        { date: '2025-08-04', day: 'Segunda-feira', content: 'Metabolismo de aminoácidos y proteínas', completed: false, comments: '', id: 4 },
+        { date: '2025-08-05', day: 'Terça-feira', content: 'Metabolismo de nucleótidos', completed: false, comments: '', id: 5 },
+        { date: '2025-08-06', day: 'Quarta-feira', content: 'Integração metabólica', completed: false, comments: '', id: 6 },
+        { date: '2025-08-19', day: 'Terça-feira', content: 'Revisão geral', completed: false, comments: '', id: 7 }
+      ],
+      'saude-mental': [
+        { date: '2025-08-01', day: 'Sexta-feira', content: 'Conceitos Básicos', completed: false, comments: '', id: 8 },
+        { date: '2025-08-06', day: 'Quarta-feira', content: 'Transtornos Comuns', completed: false, comments: '', id: 9 }
+      ],
+      'fisiologia': [
+        { date: '2025-08-02', day: 'Sábado', content: 'Fisiologia Celular', completed: false, comments: '', id: 10 },
+        { date: '2025-08-07', day: 'Quinta-feira', content: 'Neurofisiologia', completed: false, comments: '', id: 11 }
+      ]
+    };
+
+    let nextId = 12;
+
+    function showTab(tabName) {
+      // Remover active de todas as abas
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      
+      // Ativar aba clicada
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+      
+      // Carregar conteúdo da aba
+      if (tabName === 'geral') {
+        loadOverview();
+      } else {
+        loadStudyList(tabName);
+      }
+    }
+
+    function addStudyItem(subject) {
+      const prefix = getPrefix(subject);
+      const date = document.getElementById(`${prefix}-date`).value;
+      const day = document.getElementById(`${prefix}-day`).value;
+      const content = document.getElementById(`${prefix}-content`).value;
+
+      if (!date || !day || !content) {
+        alert('Por favor, preencha todos os campos!');
+        return;
+      }
+
+      const newItem = {
+        id: nextId++,
+        date: date,
+        day: day,
+        content: content,
+        completed: false,
+        comments: ''
+      };
+
+      studyData[subject].push(newItem);
+      
+      // Limpar campos
+      document.getElementById(`${prefix}-date`).value = '';
+      document.getElementById(`${prefix}-day`).value = '';
+      document.getElementById(`${prefix}-content`).value = '';
+
+      loadStudyList(subject);
+      updateStats();
+      saveToStorage(); // Salvar automaticamente
+    }
+
+    function getPrefix(subject) {
+      const prefixes = {
+        'bioquimica': 'bio',
+        'saude-mental': 'sm',
+        'fisiologia': 'fis'
+      };
+      return prefixes[subject];
+    }
+
+    function loadStudyList(subject) {
+      const container = document.getElementById(`${getPrefix(subject)}-list`);
+      const items = studyData[subject];
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-book-open"></i>
+            <h3>Nenhum conteúdo adicionado ainda</h3>
+            <p>Use o formulário acima para adicionar novos conteúdos de estudo.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="study-item ${item.completed ? 'completed' : 'pending'}">
+          <div class="study-header">
+            <div class="study-date">
+              <i class="fas fa-calendar"></i> ${formatDate(item.date)} - ${item.day}
+            </div>
+            <div class="study-actions">
+              <button class="btn ${item.completed ? 'btn-danger' : 'btn-success'}" 
+                      onclick="toggleComplete('${subject}', ${item.id})">
+                <i class="fas ${item.completed ? 'fa-times' : 'fa-check'}"></i>
+                ${item.completed ? 'Desmarcar' : 'Concluir'}
+              </button>
+              <button class="btn btn-danger" onclick="removeItem('${subject}', ${item.id})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="study-content">
+            <h3>${item.content}</h3>
+          </div>
+          <div class="study-comments">
+            <textarea placeholder="Adicione comentários sobre este conteúdo..." 
+                      onchange="updateComments('${subject}', ${item.id}, this.value)">${item.comments}</textarea>
+          </div>
+        </div>
+      `).join('');
+
+      updateStats();
+    }
+
+    function toggleComplete(subject, id) {
+      const item = studyData[subject].find(item => item.id === id);
+      if (item) {
+        item.completed = !item.completed;
+        loadStudyList(subject);
+        saveToStorage(); // Salvar automaticamente
+      }
+    }
+
+    function removeItem(subject, id) {
+      if (confirm('Tem certeza que deseja remover este item?')) {
+        studyData[subject] = studyData[subject].filter(item => item.id !== id);
+        loadStudyList(subject);
+        saveToStorage(); // Salvar automaticamente
+      }
+    }
+
+    function updateComments(subject, id, comments) {
+      const item = studyData[subject].find(item => item.id === id);
+      if (item) {
+        item.comments = comments;
+        saveToStorage(); // Salvar automaticamente
+      }
+    }
+
+    function updateStats() {
+      Object.keys(studyData).forEach(subject => {
+        const prefix = getPrefix(subject);
+        const items = studyData[subject];
+        const completed = items.filter(item => item.completed).length;
+        const total = items.length;
+        const pending = total - completed;
+
+        document.getElementById(`${prefix}-total`).textContent = total;
+        document.getElementById(`${prefix}-completed`).textContent = completed;
+        document.getElementById(`${prefix}-pending`).textContent = pending;
+      });
+
+      // Stats gerais
+      const allItems = Object.values(studyData).flat();
+      const totalAll = allItems.length;
+      const completedAll = allItems.filter(item => item.completed).length;
+      const pendingAll = totalAll - completedAll;
+      const progressAll = totalAll > 0 ? Math.round((completedAll / totalAll) * 100) : 0;
+
+      document.getElementById('total-all').textContent = totalAll;
+      document.getElementById('completed-all').textContent = completedAll;
+      document.getElementById('pending-all').textContent = pendingAll;
+      document.getElementById('progress-all').textContent = `${progressAll}%`;
+    }
+
+    function loadOverview() {
+      const container = document.getElementById('upcoming-list');
+      const allItems = Object.values(studyData).flat();
+      const upcoming = allItems
+        .filter(item => !item.completed && new Date(item.date) >= new Date())
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 5);
+
+      if (upcoming.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-check-circle"></i>
+            <h3>Todas as atividades concluídas!</h3>
+            <p>Parabéns! Você concluiu todas as atividades próximas.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = upcoming.map(item => `
+        <div class="study-item pending">
+          <div class="study-header">
+            <div class="study-date">
+              <i class="fas fa-calendar"></i> ${formatDate(item.date)} - ${item.day}
+            </div>
+          </div>
+          <div class="study-content">
+            <h3>${item.content}</h3>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    // Inicialização
+    window.addEventListener('load', function() {
+      loadFromStorage(); // Carregar dados salvos
+      loadStudyList('bioquimica');
+      updateStats();
+    });
+
+    // Salvar automaticamente antes de fechar a página
+    window.addEventListener('beforeunload', function() {
+      saveToStorage();
+    });
+
+    // Teclas de atalho
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+S para exportar
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        exportData();
+      }
+      // Ctrl+O para importar
+      if (e.ctrlKey && e.key === 'o') {
+        e.preventDefault();
+        importData();
+      }
+    });
+  </script>
+</body>
+</html>
